@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Nuevo aviso de mantenimiento IT</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="card">
+    <h1>Aviso de incidencia IT</h1>
+
+    <form id="form-ticket" enctype="multipart/form-data">
+      <label for="aula">Aula / ubicación</label>
+      <select id="aula" name="aula_id" required></select>
+
+      <label for="categoria">Categoría</label>
+      <select id="categoria" name="categoria" required>
+        <option value="">Selecciona...</option>
+        <option value="Hardware">Hardware</option>
+        <option value="Software">Software</option>
+        <option value="Red/Internet">Red / Internet</option>
+        <option value="Impresoras">Impresoras</option>
+        <option value="Otros">Otros</option>
+      </select>
+
+      <label for="descripcion">Descripción del problema</label>
+      <textarea id="descripcion" name="descripcion" rows="4" required placeholder="Describe brevemente qué ocurre..."></textarea>
+
+      <label for="nombre_reportante">Tu nombre</label>
+      <input id="nombre_reportante" name="nombre_reportante" type="text" required placeholder="Nombre y apellidos" />
+
+      <label for="foto">Foto (opcional)</label>
+      <input id="foto" name="foto" type="file" accept="image/*" capture="environment" />
+
+      <button type="submit" id="btn-enviar">Enviar aviso</button>
+      <p id="error" class="error" hidden></p>
+    </form>
+
+    <section id="confirmacion" hidden>
+      <h2>✅ Aviso enviado</h2>
+      <p>Tu aviso se ha registrado con el número <strong id="ref-ticket"></strong>.</p>
+      <p>El equipo de IT lo revisará lo antes posible.</p>
+      <button id="btn-nuevo">Crear otro aviso</button>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

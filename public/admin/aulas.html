@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aulas y códigos QR</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <header class="topbar">
+    <nav>
+      <a href="/admin/">Tickets</a>
+      <a href="/admin/aulas.html" class="active">Aulas / QR</a>
+    </nav>
+    <button id="btn-logout">Cerrar sesión</button>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Nueva aula / ubicación</h2>
+      <form id="form-nueva-aula" style="display:flex; gap:10px; align-items:end;">
+        <div class="field">
+          <label for="nombre-aula">Nombre</label>
+          <input id="nombre-aula" type="text" required placeholder="Ej. Aula 101" />
+        </div>
+        <button class="btn" type="submit">Añadir</button>
+      </form>
+      <p class="error" id="error-aula" hidden></p>
+    </section>
+
+    <section class="panel">
+      <h2>Aulas existentes</h2>
+      <table>
+        <thead>
+          <tr><th>Nombre</th><th>Código QR</th><th></th></tr>
+        </thead>
+        <tbody id="tbody-aulas"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="admin.js"></script>
+  <script src="aulas.js"></script>
+</body>
+</html>

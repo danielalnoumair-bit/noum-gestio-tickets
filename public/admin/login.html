@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Acceso IT - Gestión de tickets</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <div class="login-wrap">
+    <form class="login-box" id="form-login">
+      <h2>Gestión de tickets IT</h2>
+      <label for="username">Usuario</label>
+      <input id="username" name="username" type="text" required autofocus />
+      <label for="password">Contraseña</label>
+      <input id="password" name="password" type="password" required />
+      <button class="btn" type="submit">Entrar</button>
+      <p class="error" id="error" hidden></p>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('form-login').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const errorEl = document.getElementById('error');
+      errorEl.hidden = true;
+
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (res.ok) {
+        window.location.href = '/admin/';
+      } else {
+        const data = await res.json().catch(() => ({}));
+        errorEl.textContent = data.error || 'Error al iniciar sesión';
+        errorEl.hidden = false;
+      }
+    });
+  </script>
+</body>
+</html>

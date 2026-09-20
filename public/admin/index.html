@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tickets IT</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <header class="topbar">
+    <nav>
+      <a href="/admin/" class="active">Tickets</a>
+      <a href="/admin/aulas.html">Aulas / QR</a>
+    </nav>
+    <button id="btn-logout">Cerrar sesión</button>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="filters">
+        <div class="field">
+          <label for="f-estado">Estado</label>
+          <select id="f-estado">
+            <option value="">Todos</option>
+            <option value="abierto">Abierto</option>
+            <option value="en_proceso">En proceso</option>
+            <option value="resuelto">Resuelto</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-categoria">Categoría</label>
+          <select id="f-categoria">
+            <option value="">Todas</option>
+            <option value="Hardware">Hardware</option>
+            <option value="Software">Software</option>
+            <option value="Red/Internet">Red / Internet</option>
+            <option value="Impresoras">Impresoras</option>
+            <option value="Otros">Otros</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-aula">Aula</label>
+          <select id="f-aula"><option value="">Todas</option></select>
+        </div>
+        <div class="field">
+          <label for="f-q">Buscar</label>
+          <input id="f-q" type="text" placeholder="Nombre o descripción" />
+        </div>
+        <div class="field">
+          <label for="f-desde">Desde</label>
+          <input id="f-desde" type="date" />
+        </div>
+        <div class="field">
+          <label for="f-hasta">Hasta</label>
+          <input id="f-hasta" type="date" />
+        </div>
+        <div class="field">
+          <button class="btn" id="btn-filtrar">Filtrar</button>
+        </div>
+        <div class="field">
+          <a class="btn secondary" id="btn-exportar" href="/api/export">Exportar Excel</a>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Aula</th>
+            <th>Categoría</th>
+            <th>Reportado por</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tbody-tickets"></tbody>
+      </table>
+      <p id="sin-resultados" hidden>No hay tickets con esos filtros.</p>
+    </section>
+  </main>
+
+  <script src="admin.js"></script>
+  <script src="tickets-list.js"></script>
+</body>
+</html>
