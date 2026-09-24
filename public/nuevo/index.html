@@ -9,13 +9,18 @@
 <body>
   <main class="card">
     <div class="brand-header">
-      <img src="/logo-color-2-1.jpg" alt="Logo Barri Besòs" class="brand-logo" />
+      <img src="/logo-color-2-1.png" alt="Logo Barri Besòs" class="brand-logo" />
       <h1>NOUM GESTIÓ DE TICKETS</h1>
     </div>
 
+    <section id="sin-qr" hidden>
+      <p class="aviso-qr">Aquest formulari només es pot obrir escanejant el codi QR de la teva aula.</p>
+      <p class="aviso-qr-sub">Busca l'etiqueta QR a la porta de l'aula i escaneja-la amb el mòbil.</p>
+    </section>
+
     <form id="form-ticket" enctype="multipart/form-data">
       <label for="aula">Aula / ubicació</label>
-      <select id="aula" name="aula_id" required></select>
+      <select id="aula" name="aula_id" required disabled></select>
 
       <label for="categoria">Categoria</label>
       <select id="categoria" name="categoria" required>

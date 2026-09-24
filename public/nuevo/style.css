@@ -83,6 +83,22 @@ button:disabled {
   margin-top: 12px;
 }
 
+#sin-qr {
+  text-align: center;
+  padding: 8px 0 4px;
+}
+
+.aviso-qr {
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin: 0 0 8px;
+}
+
+.aviso-qr-sub {
+  color: #5b6472;
+  margin: 0;
+}
+
 #confirmacion {
   text-align: center;
 }

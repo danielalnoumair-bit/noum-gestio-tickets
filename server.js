@@ -49,8 +49,8 @@ app.get('/admin/aulas.html', requireAuth, (req, res) =>
   res.sendFile(path.join(__dirname, 'public', 'admin', 'aulas.html'))
 );
 
-app.get('/logo-color-2-1.jpg', (req, res) =>
-  res.sendFile(path.join(__dirname, 'public', 'logo-color-2-1.jpg'))
+app.get('/logo-color-2-1.png', (req, res) =>
+  res.sendFile(path.join(__dirname, 'public', 'logo-color-2-1.png'))
 );
 
 app.use(express.static(path.join(__dirname, 'public')));

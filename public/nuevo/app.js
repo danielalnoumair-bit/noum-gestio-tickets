@@ -4,25 +4,35 @@ const errorEl = document.getElementById('error');
 const btnEnviar = document.getElementById('btn-enviar');
 const confirmacion = document.getElementById('confirmacion');
 const refTicket = document.getElementById('ref-ticket');
+const sinQr = document.getElementById('sin-qr');
 
 const aulaIdFromQr = new URLSearchParams(window.location.search).get('aula');
 
 async function cargarAulas() {
+  // Sin un aula vàlida vinguda del QR, no s'ha d'obrir el formulari:
+  // el desplegable només l'ha de poder omplir un escaneig de QR.
+  if (!aulaIdFromQr) {
+    form.hidden = true;
+    sinQr.hidden = false;
+    return;
+  }
+
   const res = await fetch('/api/aulas');
   const aulas = await res.json();
 
-  aulaSelect.innerHTML = '<option value="">Selecciona un aula...</option>';
-  for (const aula of aulas) {
-    const opt = document.createElement('option');
-    opt.value = aula.id;
-    opt.textContent = aula.nombre;
-    aulaSelect.appendChild(opt);
+  const aulaValida = aulas.find((a) => String(a.id) === aulaIdFromQr);
+  if (!aulaValida) {
+    form.hidden = true;
+    sinQr.hidden = false;
+    return;
   }
 
-  if (aulaIdFromQr && aulas.some((a) => String(a.id) === aulaIdFromQr)) {
-    aulaSelect.value = aulaIdFromQr;
-    aulaSelect.disabled = true;
-  }
+  const opt = document.createElement('option');
+  opt.value = aulaValida.id;
+  opt.textContent = aulaValida.nombre;
+  aulaSelect.appendChild(opt);
+  aulaSelect.value = aulaValida.id;
+  aulaSelect.disabled = true;
 }
 
 form.addEventListener('submit', async (e) => {
