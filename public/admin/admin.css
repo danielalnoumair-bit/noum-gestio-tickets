@@ -205,3 +205,70 @@ tr:hover {
   border-radius: 8px;
   margin-top: 8px;
 }
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid #e5e7eb;
+  margin: 16px 0 20px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+}
+
+.tab-btn:hover {
+  color: #1e293b;
+}
+
+.tab-btn.active {
+  color: #1e293b;
+  border-bottom-color: #2563eb;
+}
+
+.comentario {
+  padding: 12px 0;
+  border-bottom: 1px solid #eef0f3;
+}
+
+.comentario:last-child {
+  border-bottom: none;
+}
+
+.comentario-meta {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.comentario-texto {
+  white-space: pre-wrap;
+}
+
+.sin-comentarios {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.nuevo-comentario {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px dashed #e5e7eb;
+}
+
+.nuevo-comentario textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccd0d5;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 1rem;
+}

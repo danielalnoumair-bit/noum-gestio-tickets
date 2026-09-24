@@ -5,22 +5,12 @@ function formatFecha(iso) {
   return iso ? iso.replace('T', ' ').slice(0, 16) : '';
 }
 
-async function cargarTicket() {
-  const res = await apiFetch(`/api/tickets/${ticketId}`);
-  if (!res.ok) {
-    detalle.innerHTML = '<p class="error">Ticket no encontrado.</p>';
-    return;
-  }
-  const t = await res.json();
-  const user = await getCurrentUser();
-  const canEdit = user.role === 'editor';
-
-  detalle.innerHTML = `
-    <h2>Ticket #${t.id} <span class="badge ${t.estado}">${ESTADO_LABEL[t.estado]}</span></h2>
+function renderDetalleTab(t, canEdit) {
+  return `
     <p><strong>Fecha:</strong> ${formatFecha(t.created_at)}</p>
     <p><strong>Aula:</strong> ${escapeHtml(t.aula_nombre)}</p>
     <p><strong>Categoría:</strong> ${escapeHtml(t.categoria)}</p>
-    <p><strong>Reportado por:</strong> ${escapeHtml(t.nombre_reportante)}</p>
+    ${canEdit ? `<p><strong>Reportado por:</strong> ${escapeHtml(t.nombre_reportante)}</p>` : ''}
     <p><strong>Descripción:</strong><br>${escapeHtml(t.descripcion)}</p>
     ${t.foto_filename ? `<img class="foto-preview" src="/api/tickets/${t.id}/foto" alt="Foto del aviso" />` : ''}
 
@@ -38,24 +28,113 @@ async function cargarTicket() {
       <p id="guardado-ok" style="display:none; color:#16a34a; font-weight:600;">Cambios guardados.</p>
     ` : '<p><strong>Modo consulta:</strong> no puedes modificar este ticket.</p>'}
   `;
+}
 
-  if (!canEdit) return;
+function renderComentario(c) {
+  return `
+    <div class="comentario">
+      <div class="comentario-meta"><strong>${escapeHtml(c.autor)}</strong> · ${formatFecha(c.created_at)}</div>
+      <div class="comentario-texto">${escapeHtml(c.texto)}</div>
+    </div>
+  `;
+}
 
-  document.getElementById('btn-guardar').addEventListener('click', async () => {
-    const estado = document.getElementById('estado').value;
-    const nota_interna = document.getElementById('nota_interna').value;
+function renderComentariosTab(comentarios, canEdit) {
+  const lista = comentarios.length
+    ? comentarios.map(renderComentario).join('')
+    : '<p class="sin-comentarios">Todavía no hay comentarios.</p>';
 
-    const res = await apiFetch(`/api/tickets/${ticketId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ estado, nota_interna }),
+  return `
+    <div id="lista-comentarios">${lista}</div>
+    ${canEdit ? `
+      <div class="nuevo-comentario">
+        <label for="texto_comentario">Añadir comentario</label>
+        <textarea id="texto_comentario" rows="3" placeholder="Escribe una nota para el equipo..."></textarea>
+        <button class="btn" id="btn-comentar" style="margin-top: 10px;">Publicar comentario</button>
+        <p id="comentario-error" class="error" hidden></p>
+      </div>
+    ` : ''}
+  `;
+}
+
+let tabActiva = 'detalle';
+
+async function cargarTicket() {
+  const [ticketRes, user] = await Promise.all([
+    apiFetch(`/api/tickets/${ticketId}`),
+    getCurrentUser(),
+  ]);
+
+  if (!ticketRes.ok) {
+    detalle.innerHTML = '<p class="error">Ticket no encontrado.</p>';
+    return;
+  }
+
+  const t = await ticketRes.json();
+  const canEdit = user.role === 'editor';
+
+  const comentariosRes = await apiFetch(`/api/tickets/${ticketId}/comentarios`);
+  const comentarios = comentariosRes.ok ? await comentariosRes.json() : [];
+
+  detalle.innerHTML = `
+    <h2>Ticket #${t.id} <span class="badge ${t.estado}">${ESTADO_LABEL[t.estado]}</span></h2>
+
+    <div class="tabs">
+      <button class="tab-btn ${tabActiva === 'detalle' ? 'active' : ''}" data-tab="detalle">Detalle</button>
+      <button class="tab-btn ${tabActiva === 'comentarios' ? 'active' : ''}" data-tab="comentarios">Comentarios (${comentarios.length})</button>
+    </div>
+
+    <div class="tab-panel" id="tab-detalle" ${tabActiva !== 'detalle' ? 'hidden' : ''}>${renderDetalleTab(t, canEdit)}</div>
+    <div class="tab-panel" id="tab-comentarios" ${tabActiva !== 'comentarios' ? 'hidden' : ''}>${renderComentariosTab(comentarios, canEdit)}</div>
+  `;
+
+  detalle.querySelectorAll('.tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      tabActiva = btn.dataset.tab;
+      detalle.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      detalle.querySelectorAll('.tab-panel').forEach((p) => (p.hidden = true));
+      document.getElementById(`tab-${btn.dataset.tab}`).hidden = false;
+    });
+  });
+
+  if (canEdit) {
+    document.getElementById('btn-guardar')?.addEventListener('click', async () => {
+      const estado = document.getElementById('estado').value;
+      const nota_interna = document.getElementById('nota_interna').value;
+
+      const res = await apiFetch(`/api/tickets/${ticketId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estado, nota_interna }),
+      });
+
+      if (res.ok) {
+        document.getElementById('guardado-ok').style.display = 'block';
+        cargarTicket();
+      }
     });
 
-    if (res.ok) {
-      document.getElementById('guardado-ok').style.display = 'block';
-      cargarTicket();
-    }
-  });
+    document.getElementById('btn-comentar')?.addEventListener('click', async () => {
+      const texto = document.getElementById('texto_comentario').value;
+      const errorEl = document.getElementById('comentario-error');
+      errorEl.hidden = true;
+
+      const res = await apiFetch(`/api/tickets/${ticketId}/comentarios`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ texto }),
+      });
+
+      if (res.ok) {
+        cargarTicket();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        errorEl.textContent = data.error || 'No se ha podido publicar el comentario';
+        errorEl.hidden = false;
+      }
+    });
+  }
 }
 
 cargarTicket();

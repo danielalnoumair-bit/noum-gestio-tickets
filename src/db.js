@@ -40,6 +40,14 @@ db.exec(`
     password_hash TEXT NOT NULL,
     rol TEXT NOT NULL DEFAULT 'editor'
   );
+
+  CREATE TABLE IF NOT EXISTS comentarios (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ticket_id INTEGER NOT NULL REFERENCES tickets(id),
+    autor TEXT NOT NULL,
+    texto TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
 try {

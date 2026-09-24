@@ -39,6 +39,12 @@ router.post('/', upload.single('foto'), (req, res) => {
   res.status(201).json({ id: result.lastInsertRowid });
 });
 
+function ocultarReportante(ticket, role) {
+  if (!ticket || role === 'editor') return ticket;
+  const { nombre_reportante, ...resto } = ticket;
+  return resto;
+}
+
 router.get('/', requireAuth, (req, res) => {
   const { where, params } = buildFilters(req.query);
   const tickets = db
@@ -50,7 +56,7 @@ router.get('/', requireAuth, (req, res) => {
        ORDER BY t.created_at DESC`
     )
     .all(...params);
-  res.json(tickets);
+  res.json(tickets.map((t) => ocultarReportante(t, req.session.role)));
 });
 
 router.get('/:id', requireAuth, (req, res) => {
@@ -62,7 +68,7 @@ router.get('/:id', requireAuth, (req, res) => {
     )
     .get(req.params.id);
   if (!ticket) return res.status(404).json({ error: 'Ticket no encontrado' });
-  res.json(ticket);
+  res.json(ocultarReportante(ticket, req.session.role));
 });
 
 router.patch('/:id', requireEditor, (req, res) => {
@@ -87,6 +93,32 @@ router.get('/:id/foto', requireAuth, (req, res) => {
   const ticket = db.prepare('SELECT foto_filename FROM tickets WHERE id = ?').get(req.params.id);
   if (!ticket || !ticket.foto_filename) return res.status(404).end();
   res.sendFile(path.join(__dirname, '..', '..', 'data', 'uploads', ticket.foto_filename));
+});
+
+router.get('/:id/comentarios', requireAuth, (req, res) => {
+  const ticket = db.prepare('SELECT id FROM tickets WHERE id = ?').get(req.params.id);
+  if (!ticket) return res.status(404).json({ error: 'Ticket no encontrado' });
+
+  const comentarios = db
+    .prepare('SELECT * FROM comentarios WHERE ticket_id = ? ORDER BY created_at ASC')
+    .all(req.params.id);
+  res.json(comentarios);
+});
+
+router.post('/:id/comentarios', requireEditor, (req, res) => {
+  const ticket = db.prepare('SELECT id FROM tickets WHERE id = ?').get(req.params.id);
+  if (!ticket) return res.status(404).json({ error: 'Ticket no encontrado' });
+
+  const texto = req.body?.texto?.trim();
+  if (!texto) return res.status(400).json({ error: 'El comentario no puede estar vacío' });
+
+  const result = db
+    .prepare('INSERT INTO comentarios (ticket_id, autor, texto) VALUES (?, ?, ?)')
+    .run(req.params.id, req.session.username, texto);
+
+  res.status(201).json(
+    db.prepare('SELECT * FROM comentarios WHERE id = ?').get(result.lastInsertRowid)
+  );
 });
 
 module.exports = router;

@@ -36,6 +36,8 @@ async function cargarAulasFiltro() {
   }
 }
 
+let esEditor = false;
+
 async function cargarTickets() {
   const params = buildQuery();
   document.getElementById('btn-exportar').href = `/api/export?${params.toString()}`;
@@ -53,7 +55,7 @@ async function cargarTickets() {
       <td>${formatFecha(t.created_at)}</td>
       <td>${escapeHtml(t.aula_nombre)}</td>
       <td>${escapeHtml(t.categoria)}</td>
-      <td>${escapeHtml(t.nombre_reportante)}</td>
+      ${esEditor ? `<td>${escapeHtml(t.nombre_reportante)}</td>` : ''}
       <td><span class="badge ${t.estado}">${ESTADO_LABEL[t.estado]}</span></td>
       <td><a class="btn" href="/admin/ticket.html?id=${t.id}">Ver</a></td>
     `;
@@ -63,4 +65,8 @@ async function cargarTickets() {
 
 document.getElementById('btn-filtrar').addEventListener('click', cargarTickets);
 
-cargarAulasFiltro().then(cargarTickets);
+getCurrentUser().then((user) => {
+  esEditor = user.role === 'editor';
+  document.getElementById('th-reportante').hidden = !esEditor;
+  cargarAulasFiltro().then(cargarTickets);
+});

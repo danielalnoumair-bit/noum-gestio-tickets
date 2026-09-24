@@ -23,13 +23,15 @@ router.get('/', requireAuth, async (req, res) => {
     )
     .all(...params);
 
+  const esEditor = req.session.role === 'editor';
+
   const workbook = new ExcelJS.Workbook();
   const sheet = workbook.addWorksheet('Tickets');
 
   sheet.columns = [
     { header: 'ID', key: 'id', width: 8 },
     { header: 'Fecha creación', key: 'created_at', width: 20 },
-    { header: 'Reportado por', key: 'nombre_reportante', width: 22 },
+    ...(esEditor ? [{ header: 'Reportado por', key: 'nombre_reportante', width: 22 }] : []),
     { header: 'Aula', key: 'aula_nombre', width: 18 },
     { header: 'Categoría', key: 'categoria', width: 16 },
     { header: 'Descripción', key: 'descripcion', width: 40 },
