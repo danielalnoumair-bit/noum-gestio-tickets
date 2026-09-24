@@ -1,4 +1,4 @@
 module.exports = {
-  CATEGORIAS: ['Hardware', 'Software', 'Red/Internet', 'Impresoras', 'Otros'],
+  CATEGORIAS: ['Informàtica', 'Altres'],
   ESTADOS: ['abierto', 'en_proceso', 'resuelto'],
 };

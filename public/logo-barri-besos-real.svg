@@ -1,0 +1,16 @@
+<svg width="620" height="240" viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="INS Barri Besòs">
+  <rect width="620" height="240" fill="#000000"/>
+
+  <g transform="translate(18 20)">
+    <rect x="0" y="0" width="170" height="140" rx="30" fill="#2b1d18"/>
+    <rect x="26" y="24" width="116" height="92" rx="18" fill="#f39d52"/>
+
+    <rect x="215" y="0" width="170" height="140" rx="30" fill="#2b1d18"/>
+    <rect x="241" y="24" width="116" height="92" rx="18" fill="#68b779"/>
+
+    <rect x="430" y="0" width="170" height="140" rx="30" fill="#2b1d18"/>
+    <rect x="456" y="24" width="116" height="92" rx="18" fill="#7d8fe7"/>
+  </g>
+
+  <text x="310" y="205" text-anchor="middle" font-family="Verdana, Arial, sans-serif" font-size="32" font-weight="700" letter-spacing="1" fill="#ffffff">INS. BARRI BESÒS</text>
+</svg>

@@ -1,4 +1,4 @@
-# Tickets IT - Instituto
+# Tickets IT - INS Barri Besòs
 
 Gestión de incidencias de mantenimiento IT: alta desde móvil (sin login, vía QR de cada aula) y gestión desde PC (con login) con exportación a Excel.
 
@@ -54,3 +54,15 @@ Railway aloja el contenedor con disco propio, pero en el plan gratuito ese disco
    - `PUBLIC_URL` (la URL pública que te asigna Railway, ej. `https://tu-proyecto.up.railway.app`; se ve en la pestaña "Settings" → "Networking" tras el primer despliegue).
 4. Railway detecta que es una app Node.js y ejecuta `npm start` automáticamente.
 5. Accede a `https://tu-proyecto.up.railway.app/nuevo/` desde cualquier móvil, y a `/admin/` con el usuario/contraseña definidos en el paso 3.
+
+## Despliegue en Render y dominio de IONOS
+
+El archivo `render.yaml` deja preparado un servicio web gratuito de Render. Para publicarlo:
+
+1. Sube el proyecto a un repositorio privado de GitHub.
+2. En Render, crea un servicio nuevo desde ese repositorio y confirma el archivo `render.yaml`.
+3. Define las variables `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `VIEWER_USERNAME`, `VIEWER_PASSWORD` y `PUBLIC_URL` en el servicio.
+4. En IONOS, crea un subdominio, por ejemplo `tickets`, y añade el registro CNAME que indique Render.
+5. Añade ese dominio personalizado en Render. Render generará el certificado HTTPS automáticamente.
+
+El plan gratuito de Render puede dormir por inactividad y el almacenamiento local de SQLite y fotos no es permanente. Para uso real conviene migrar los datos a una base de datos y almacenamiento persistentes.

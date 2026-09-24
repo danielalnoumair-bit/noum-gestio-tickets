@@ -31,8 +31,15 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS usuarios (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL
+    password_hash TEXT NOT NULL,
+    rol TEXT NOT NULL DEFAULT 'editor'
   );
 `);
+
+try {
+  db.exec("ALTER TABLE usuarios ADD COLUMN rol TEXT NOT NULL DEFAULT 'editor'");
+} catch (err) {
+  if (!String(err.message).includes('duplicate column name')) throw err;
+}
 
 module.exports = db;

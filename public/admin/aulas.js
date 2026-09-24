@@ -1,5 +1,6 @@
 const tbodyAulas = document.getElementById('tbody-aulas');
 const errorAula = document.getElementById('error-aula');
+let canEdit = false;
 
 async function cargarAulas() {
   const res = await apiFetch('/api/aulas');
@@ -13,11 +14,21 @@ async function cargarAulas() {
       <td><img src="/api/aulas/${aula.id}/qr" width="80" height="80" alt="QR ${escapeHtml(aula.nombre)}" /></td>
       <td>
         <a class="btn secondary" href="/api/aulas/${aula.id}/qr" download="qr-${aula.id}.png">Descargar QR</a>
-        <button class="btn danger" data-id="${aula.id}">Borrar</button>
+        ${canEdit ? `<button class="btn danger" data-id="${aula.id}">Borrar</button>` : ''}
       </td>
     `;
-    tr.querySelector('.danger').addEventListener('click', () => borrarAula(aula.id));
+    if (canEdit) {
+      tr.querySelector('.danger').addEventListener('click', () => borrarAula(aula.id));
+    }
     tbodyAulas.appendChild(tr);
+  }
+}
+
+async function configurarPermisos() {
+  const user = await getCurrentUser();
+  canEdit = user.role === 'editor';
+  if (user.role !== 'editor') {
+    document.getElementById('form-nueva-aula').closest('.panel').hidden = true;
   }
 }
 
@@ -54,4 +65,4 @@ document.getElementById('form-nueva-aula').addEventListener('submit', async (e) 
   cargarAulas();
 });
 
-cargarAulas();
+configurarPermisos().then(cargarAulas);

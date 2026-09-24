@@ -1,16 +1,30 @@
 const bcrypt = require('bcryptjs');
 const db = require('./db');
 
-const { ADMIN_USERNAME, ADMIN_PASSWORD } = process.env;
-
-if (ADMIN_USERNAME && ADMIN_PASSWORD) {
-  const existing = db.prepare('SELECT id FROM usuarios WHERE username = ?').get(ADMIN_USERNAME);
-  const hash = bcrypt.hashSync(ADMIN_PASSWORD, 10);
+function seedUser(username, password, role) {
+  const existing = db.prepare('SELECT id FROM usuarios WHERE username = ?').get(username);
+  const hash = bcrypt.hashSync(password, 10);
 
   if (existing) {
-    db.prepare('UPDATE usuarios SET password_hash = ? WHERE username = ?').run(hash, ADMIN_USERNAME);
-  } else {
-    db.prepare('INSERT INTO usuarios (username, password_hash) VALUES (?, ?)').run(ADMIN_USERNAME, hash);
-    console.log(`Usuario de IT "${ADMIN_USERNAME}" creado a partir de ADMIN_USERNAME/ADMIN_PASSWORD.`);
+    db.prepare('UPDATE usuarios SET password_hash = ?, rol = ? WHERE username = ?').run(hash, role, username);
+    return;
   }
+
+  db.prepare('INSERT INTO usuarios (username, password_hash, rol) VALUES (?, ?, ?)').run(username, hash, role);
+  console.log(`Usuario "${username}" creado con rol ${role}.`);
+}
+
+seedUser('admin', 'admin', 'editor');
+seedUser('consulta', 'consulta', 'viewer');
+
+const configuredAdmin = process.env.ADMIN_USERNAME;
+const configuredAdminPassword = process.env.ADMIN_PASSWORD;
+if (configuredAdmin && configuredAdminPassword && configuredAdmin !== 'admin') {
+  seedUser(configuredAdmin, configuredAdminPassword, 'editor');
+}
+
+const configuredViewer = process.env.VIEWER_USERNAME;
+const configuredViewerPassword = process.env.VIEWER_PASSWORD;
+if (configuredViewer && configuredViewerPassword && configuredViewer !== 'consulta') {
+  seedUser(configuredViewer, configuredViewerPassword, 'viewer');
 }

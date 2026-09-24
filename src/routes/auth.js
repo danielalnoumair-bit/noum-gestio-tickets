@@ -17,7 +17,8 @@ router.post('/login', (req, res) => {
 
   req.session.userId = user.id;
   req.session.username = user.username;
-  res.json({ username: user.username });
+  req.session.role = user.rol;
+  res.json({ username: user.username, role: user.rol });
 });
 
 router.post('/logout', (req, res) => {
@@ -26,7 +27,7 @@ router.post('/logout', (req, res) => {
 
 router.get('/me', (req, res) => {
   if (req.session && req.session.userId) {
-    return res.json({ username: req.session.username });
+    return res.json({ username: req.session.username, role: req.session.role });
   }
   res.status(401).json({ error: 'No autenticado' });
 });

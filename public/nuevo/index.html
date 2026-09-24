@@ -3,45 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>Nuevo aviso de mantenimiento IT</title>
+  <title>NOUM GESTIÓ DE TICKETS</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="card">
-    <h1>Aviso de incidencia IT</h1>
+    <div class="brand-header">
+      <img src="/logo-color-2-1.jpg" alt="Logo Barri Besòs" class="brand-logo" />
+      <h1>NOUM GESTIÓ DE TICKETS</h1>
+    </div>
 
     <form id="form-ticket" enctype="multipart/form-data">
-      <label for="aula">Aula / ubicación</label>
+      <label for="aula">Aula / ubicació</label>
       <select id="aula" name="aula_id" required></select>
 
-      <label for="categoria">Categoría</label>
+      <label for="categoria">Categoria</label>
       <select id="categoria" name="categoria" required>
         <option value="">Selecciona...</option>
-        <option value="Hardware">Hardware</option>
-        <option value="Software">Software</option>
-        <option value="Red/Internet">Red / Internet</option>
-        <option value="Impresoras">Impresoras</option>
-        <option value="Otros">Otros</option>
+        <option value="Informàtica">Informàtica</option>
+        <option value="Altres">Altres</option>
       </select>
 
-      <label for="descripcion">Descripción del problema</label>
-      <textarea id="descripcion" name="descripcion" rows="4" required placeholder="Describe brevemente qué ocurre..."></textarea>
+      <label for="descripcion">Descripció del problema</label>
+      <textarea id="descripcion" name="descripcion" rows="4" required placeholder="Descriu breument què passa..."></textarea>
 
-      <label for="nombre_reportante">Tu nombre</label>
-      <input id="nombre_reportante" name="nombre_reportante" type="text" required placeholder="Nombre y apellidos" />
+      <label for="nombre_reportante">El teu nom</label>
+      <input id="nombre_reportante" name="nombre_reportante" type="text" required placeholder="Nom i cognoms" />
 
       <label for="foto">Foto (opcional)</label>
       <input id="foto" name="foto" type="file" accept="image/*" capture="environment" />
 
-      <button type="submit" id="btn-enviar">Enviar aviso</button>
+      <button type="submit" id="btn-enviar">Enviar avís</button>
       <p id="error" class="error" hidden></p>
     </form>
 
     <section id="confirmacion" hidden>
-      <h2>✅ Aviso enviado</h2>
-      <p>Tu aviso se ha registrado con el número <strong id="ref-ticket"></strong>.</p>
-      <p>El equipo de IT lo revisará lo antes posible.</p>
-      <button id="btn-nuevo">Crear otro aviso</button>
+      <h2>✅ Avís enviat</h2>
+      <p>El teu avís s'ha registrat amb el número <strong id="ref-ticket"></strong>.</p>
+      <p>L'equip de TI el revisarà el més aviat possible.</p>
+      <button id="btn-nuevo">Crear un altre avís</button>
     </section>
   </main>
 

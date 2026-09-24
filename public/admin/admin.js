@@ -7,6 +7,11 @@ async function apiFetch(url, options = {}) {
   return res;
 }
 
+async function getCurrentUser() {
+  const res = await apiFetch('/api/auth/me');
+  return res.json();
+}
+
 function setupLogout() {
   const btn = document.getElementById('btn-logout');
   if (!btn) return;

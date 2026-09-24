@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('node:path');
 const db = require('../db');
 const requireAuth = require('../middleware/requireAuth');
+const requireEditor = require('../middleware/requireEditor');
 const upload = require('../upload');
 const { CATEGORIAS, ESTADOS } = require('../constants');
 const { buildFilters } = require('../filters');
@@ -64,7 +65,7 @@ router.get('/:id', requireAuth, (req, res) => {
   res.json(ticket);
 });
 
-router.patch('/:id', requireAuth, (req, res) => {
+router.patch('/:id', requireEditor, (req, res) => {
   const ticket = db.prepare('SELECT * FROM tickets WHERE id = ?').get(req.params.id);
   if (!ticket) return res.status(404).json({ error: 'Ticket no encontrado' });
 

@@ -1,0 +1,20 @@
+<svg width="260" height="120" viewBox="0 0 260 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="INS Barri Besòs">
+  <defs>
+    <linearGradient id="g1" x1="0" x2="1">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <rect width="260" height="120" rx="18" fill="#f8fafc"/>
+  <g transform="translate(18 18)">
+    <rect x="0" y="0" width="70" height="84" rx="12" fill="url(#g1)"/>
+    <path d="M19 18 L35 10 L51 18 V42 C51 56 42 66 35 70 C28 66 19 56 19 42 Z" fill="#ffffff" opacity="0.95"/>
+    <path d="M24 28 H46" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+    <path d="M24 37 H46" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+    <path d="M24 46 H40" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(104 24)">
+    <text x="0" y="26" font-size="24" font-weight="700" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif">INS</text>
+    <text x="0" y="58" font-size="22" font-weight="700" fill="#1d4ed8" font-family="Segoe UI, Arial, sans-serif">Barri Besòs</text>
+  </g>
+</svg>
