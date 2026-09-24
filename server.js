@@ -19,6 +19,10 @@ app.set('trust proxy', 1);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/healthz', (req, res) => {
+  res.json({ ok: true });
+});
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'cambia-este-secreto-en-produccion',
@@ -58,6 +62,18 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Error interno del servidor' });
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Servidor escuchando en http://localhost:${PORT}`);
 });
+
+function shutdown(signal) {
+  console.log(`Recibida señal ${signal}; cerrando servidor...`);
+  server.close(() => {
+    const db = require('./src/db');
+    db.close();
+    process.exit(0);
+  });
+}
+
+process.once('SIGTERM', () => shutdown('SIGTERM'));
+process.once('SIGINT', () => shutdown('SIGINT'));

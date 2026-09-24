@@ -9,6 +9,12 @@ fs.mkdirSync(path.join(dataDir, 'uploads'), { recursive: true });
 const db = new DatabaseSync(path.join(dataDir, 'tickets.db'));
 
 db.exec(`
+  PRAGMA busy_timeout = 5000;
+  PRAGMA journal_mode = WAL;
+  PRAGMA foreign_keys = ON;
+`);
+
+db.exec(`
   CREATE TABLE IF NOT EXISTS aulas (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre TEXT NOT NULL UNIQUE,
