@@ -14,6 +14,15 @@ header.topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 20px;
+}
+
+.topbar-logo {
+  height: 32px;
+  width: auto;
+  max-width: 160px;
+  object-fit: contain;
+  margin-right: auto;
 }
 
 header.topbar nav a {
