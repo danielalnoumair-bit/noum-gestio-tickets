@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('node:path');
+const fs = require('node:fs');
 const db = require('../db');
 const requireAuth = require('../middleware/requireAuth');
 const requireEditor = require('../middleware/requireEditor');
@@ -9,7 +10,15 @@ const { buildFilters } = require('../filters');
 
 const router = express.Router();
 
-router.post('/', upload.single('foto'), (req, res) => {
+router.post('/', (req, res, next) => {
+  upload.single('foto')(req, res, (err) => {
+    if (!err) return next();
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ error: 'La foto pesa demasiado (máximo 20MB). Prueba con otra foto.' });
+    }
+    return res.status(400).json({ error: err.message || 'No se ha podido subir la foto' });
+  });
+}, (req, res) => {
   const { nombre_reportante, aula_id, categoria, descripcion } = req.body || {};
 
   if (!nombre_reportante?.trim() || !aula_id || !categoria || !descripcion?.trim()) {
@@ -87,6 +96,20 @@ router.patch('/:id', requireEditor, (req, res) => {
   ).run(estado, nota_interna, req.params.id);
 
   res.json(db.prepare('SELECT * FROM tickets WHERE id = ?').get(req.params.id));
+});
+
+router.delete('/:id', requireEditor, (req, res) => {
+  const ticket = db.prepare('SELECT * FROM tickets WHERE id = ?').get(req.params.id);
+  if (!ticket) return res.status(404).json({ error: 'Ticket no encontrado' });
+
+  db.prepare('DELETE FROM comentarios WHERE ticket_id = ?').run(req.params.id);
+  db.prepare('DELETE FROM tickets WHERE id = ?').run(req.params.id);
+
+  if (ticket.foto_filename) {
+    fs.unlink(path.join(__dirname, '..', '..', 'data', 'uploads', ticket.foto_filename), () => {});
+  }
+
+  res.status(204).end();
 });
 
 router.get('/:id/foto', requireAuth, (req, res) => {

@@ -57,9 +57,31 @@ async function cargarTickets() {
       <td>${escapeHtml(t.categoria)}</td>
       ${esEditor ? `<td>${escapeHtml(t.nombre_reportante)}</td>` : ''}
       <td><span class="badge ${t.estado}">${ESTADO_LABEL[t.estado]}</span></td>
-      <td><a class="btn" href="/admin/ticket.html?id=${t.id}">Ver</a></td>
+      <td style="display: flex; gap: 8px;">
+        <a class="btn" href="/admin/ticket.html?id=${t.id}">Ver</a>
+        ${esEditor ? `<button class="btn danger" data-id="${t.id}">Eliminar</button>` : ''}
+      </td>
     `;
     tbody.appendChild(tr);
+  }
+
+  if (esEditor) {
+    tbody.querySelectorAll('button.danger').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        if (!confirm(`¿Seguro que quieres eliminar el ticket #${id}? Esta acción no se puede deshacer.`)) {
+          return;
+        }
+
+        const res = await apiFetch(`/api/tickets/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          cargarTickets();
+        } else {
+          const data = await res.json().catch(() => ({}));
+          alert(data.error || 'No se ha podido eliminar el ticket');
+        }
+      });
+    });
   }
 }
 

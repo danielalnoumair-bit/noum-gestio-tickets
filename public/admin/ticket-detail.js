@@ -26,6 +26,10 @@ function renderDetalleTab(t, canEdit) {
       <textarea id="nota_interna" rows="4">${escapeHtml(t.nota_interna)}</textarea>
       <button class="btn" id="btn-guardar" style="margin-top: 14px;">Guardar cambios</button>
       <p id="guardado-ok" style="display:none; color:#16a34a; font-weight:600;">Cambios guardados.</p>
+
+      <hr style="margin: 20px 0;" />
+      <button class="btn danger" id="btn-eliminar">Eliminar ticket</button>
+      <p id="eliminar-error" class="error" hidden></p>
     ` : '<p><strong>Modo consulta:</strong> no puedes modificar este ticket.</p>'}
   `;
 }
@@ -112,6 +116,23 @@ async function cargarTicket() {
       if (res.ok) {
         document.getElementById('guardado-ok').style.display = 'block';
         cargarTicket();
+      }
+    });
+
+    document.getElementById('btn-eliminar')?.addEventListener('click', async () => {
+      if (!confirm(`¿Seguro que quieres eliminar el ticket #${ticketId}? Esta acción no se puede deshacer.`)) {
+        return;
+      }
+
+      const res = await apiFetch(`/api/tickets/${ticketId}`, { method: 'DELETE' });
+
+      if (res.ok) {
+        window.location.href = '/admin/';
+      } else {
+        const data = await res.json().catch(() => ({}));
+        const errorEl = document.getElementById('eliminar-error');
+        errorEl.textContent = data.error || 'No se ha podido eliminar el ticket';
+        errorEl.hidden = false;
       }
     });
 
