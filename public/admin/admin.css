@@ -17,12 +17,24 @@ header.topbar {
   gap: 20px;
 }
 
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-right: auto;
+}
+
 .topbar-logo {
   height: 32px;
   width: auto;
   max-width: 160px;
   object-fit: contain;
-  margin-right: auto;
+}
+
+.topbar-title {
+  font-weight: 600;
+  font-size: 1rem;
+  white-space: nowrap;
 }
 
 header.topbar nav a {
