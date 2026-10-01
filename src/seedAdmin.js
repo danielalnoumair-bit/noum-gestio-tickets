@@ -15,7 +15,7 @@ function seedUser(username, password, role) {
 }
 
 seedUser('admin', 'admin', 'editor');
-seedUser('consulta', 'consulta', 'viewer');
+seedUser('consulta', 'consulta', 'editor');
 
 const configuredAdmin = process.env.ADMIN_USERNAME;
 const configuredAdminPassword = process.env.ADMIN_PASSWORD;
