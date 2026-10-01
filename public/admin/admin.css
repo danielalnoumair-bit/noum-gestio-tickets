@@ -134,6 +134,10 @@ tr:hover {
 .badge.en_proceso { background: #d97706; }
 .badge.resuelto { background: #16a34a; }
 
+.badge.pendiente { background: #d97706; }
+.badge.aprobado { background: #16a34a; }
+.badge.rechazado { background: #dc2626; }
+
 .btn {
   display: inline-block;
   padding: 8px 14px;

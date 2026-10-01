@@ -7,6 +7,7 @@ const authRoutes = require('./src/routes/auth');
 const aulasRoutes = require('./src/routes/aulas');
 const ticketsRoutes = require('./src/routes/tickets');
 const exportRoutes = require('./src/routes/export');
+const presupuestosRoutes = require('./src/routes/presupuestos');
 require('./src/seedAdmin');
 
 const app = express();
@@ -36,6 +37,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/aulas', aulasRoutes);
 app.use('/api/tickets', ticketsRoutes);
 app.use('/api/export', exportRoutes);
+app.use('/api/presupuestos', presupuestosRoutes);
 
 // Paginas de admin protegidas (los assets estaticos como css/js no lo estan,
 // los datos reales solo se sirven a traves de las rutas /api protegidas)
@@ -47,6 +49,9 @@ app.get('/admin/ticket.html', requireAuth, (req, res) =>
 );
 app.get('/admin/aulas.html', requireAuth, (req, res) =>
   res.sendFile(path.join(__dirname, 'public', 'admin', 'aulas.html'))
+);
+app.get('/admin/presupuestos.html', requireAuth, (req, res) =>
+  res.sendFile(path.join(__dirname, 'public', 'admin', 'presupuestos.html'))
 );
 
 app.get('/logo-color-2-1.png', (req, res) =>
