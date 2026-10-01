@@ -42,27 +42,24 @@ La base de datos (SQLite) y las fotos subidas se guardan en la carpeta `data/`, 
 - `PUBLIC_URL`: URL base que se usa al generar los códigos QR de las aulas (ej. `http://172.20.10.2:3000` o el dominio real cuando esté desplegado). Si no se define, se usa la URL con la que se acceda al panel de administración en ese momento — por eso conviene fijar `PUBLIC_URL` para que los QR no dependan de si entraste como `localhost` o por IP.
 - `ADMIN_USERNAME` / `ADMIN_PASSWORD`: si se definen, el servidor crea (o actualiza la contraseña de) ese usuario de IT automáticamente cada vez que arranca. Pensado para hostings donde no hay acceso a una terminal para ejecutar `npm run create-admin`.
 
-## Despliegue en Railway (piloto, gratuito)
+## Despliegue en producción (IONOS)
 
-Railway aloja el contenedor con disco propio, pero en el plan gratuito ese disco es efímero: cada nuevo despliegue borra la base de datos SQLite y las fotos subidas. Vale para un piloto/demo, pero los tickets no persisten entre despliegues. Pasos:
+La app corre en el servidor IONOS que también sirve `noum.es`, como servicio systemd:
 
-1. Sube este proyecto a un repositorio de GitHub (si no tienes cuenta, créala gratis en https://github.com/signup).
-2. Entra en https://railway.app, regístrate con tu cuenta de GitHub y crea un proyecto nuevo → "Deploy from GitHub repo" → selecciona este repositorio.
-3. En la pestaña "Variables" del servicio, añade:
-   - `ADMIN_USERNAME` y `ADMIN_PASSWORD` (tus credenciales de IT).
-   - `SESSION_SECRET` (cualquier cadena aleatoria larga).
-   - `PUBLIC_URL` (la URL pública que te asigna Railway, ej. `https://tu-proyecto.up.railway.app`; se ve en la pestaña "Settings" → "Networking" tras el primer despliegue).
-4. Railway detecta que es una app Node.js y ejecuta `npm start` automáticamente.
-5. Accede a `https://tu-proyecto.up.railway.app/nuevo/` desde cualquier móvil, y a `/admin/` con el usuario/contraseña definidos en el paso 3.
+- Código en `/opt/tickets` (checkout de este repositorio).
+- Servicio `tickets.service` (`systemctl status|restart tickets.service`), que ejecuta `npm start`.
+- nginx hace de proxy inverso de `tickets.noum.es` hacia `http://127.0.0.1:3000` (config en `/etc/nginx/sites-available/tickets`, certificado por Certbot).
+- Datos (SQLite y fotos) en `/opt/tickets/data`, persistentes en el disco del servidor.
 
-## Despliegue en Render y dominio de IONOS
+Para publicar un cambio:
 
-El archivo `render.yaml` deja preparado un servicio web gratuito de Render. Para publicarlo:
+```
+ssh root@<ip-del-servidor>
+cd /opt/tickets
+git pull origin main
+systemctl restart tickets.service
+```
 
-1. Sube el proyecto a un repositorio privado de GitHub.
-2. En Render, crea un servicio nuevo desde ese repositorio y confirma el archivo `render.yaml`.
-3. Define las variables `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `VIEWER_USERNAME`, `VIEWER_PASSWORD` y `PUBLIC_URL` en el servicio.
-4. En IONOS, crea un subdominio, por ejemplo `tickets`, y añade el registro CNAME que indique Render.
-5. Añade ese dominio personalizado en Render. Render generará el certificado HTTPS automáticamente.
+El reinicio vuelve a ejecutar `seedAdmin.js`, que crea o actualiza los usuarios `admin`/`consulta` (o los definidos por `ADMIN_USERNAME`/`VIEWER_USERNAME`) sin tocar los tickets ya guardados.
 
-El plan gratuito de Render puede dormir por inactividad y el almacenamiento local de SQLite y fotos no es permanente. Para uso real conviene migrar los datos a una base de datos y almacenamiento persistentes.
+> Nota: existió un piloto previo en Render (`render.yaml` queda de referencia), pero ya no está en uso — la producción real es la de IONOS descrita arriba.
